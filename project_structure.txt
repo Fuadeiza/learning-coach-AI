@@ -1,0 +1,41 @@
+.
+├── agents
+│   ├── __init__.py
+│   ├── content_agent.py
+│   ├── planner_agent.py
+│   ├── quiz_agent.py
+│   └── tutor_agent.py
+├── db
+│   ├── __init__.py
+│   ├── postgres_client.py
+│   ├── progress_tracker.py
+│   ├── redis_client.py
+│   ├── schema.sql
+│   ├── session_repository.py
+│   └── user_memory.py
+├── frontend
+├── mcp_server
+│   ├── __init__.py
+│   └── main.py
+├── models
+│   ├── __init__.py
+│   ├── api_models.py
+│   ├── content_models.py
+│   ├── plan_models.py
+│   ├── quiz_models.py
+│   └── tutor_models.py
+├── project_structure.txt
+├── project_struture_2.txt
+├── README.md
+├── requirements.txt
+├── run_server.sh
+├── setup_database.sh
+├── tests
+│   ├── test_end_to_end.py
+│   ├── test_individual_endpoint.py
+│   └── test_mcp_server.py
+└── utils
+    ├── __init__.py
+    └── logging.py
+
+8 directories, 31 files
