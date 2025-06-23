@@ -58,7 +58,38 @@ git --version        # Any recent version
 
 ## 🚀 Quick Start
 
-### Option 1: Quick Setup (Recommended for Getting Started)
+### Option 1: Docker (Recommended for Easy Setup)
+
+The fastest way to get started with all services configured:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Fuadeiza/learning-coach-platform.git
+cd learning-coach-platform
+
+# 2. Copy and configure environment file
+cp env.docker.example .env
+nano .env  # Edit OPENAI_API_KEY=your_key_here
+
+# 3. Start with Docker Compose
+docker-compose up -d
+
+# 4. Access the application
+# API: http://localhost:8000
+# API Docs: http://localhost:8000/docs
+# Database Admin: http://localhost:8080 (dev profile)
+```
+
+**What Docker setup includes:**
+- ✅ PostgreSQL database with automatic schema setup
+- ✅ Redis cache for optimal performance
+- ✅ Web application with all dependencies
+- ✅ Development tools (Adminer, Redis Commander)
+- ✅ Automatic health checks and restart policies
+- ✅ Persistent data volumes
+- ✅ Optimized networking between services
+
+### Option 2: Quick Setup (Native Installation)
 
 Perfect for developers who want to get up and running quickly:
 
@@ -88,7 +119,7 @@ nano .env  # Edit OPENAI_API_KEY=your_key_here
 - ✅ Creates `run_server.sh` utility script
 - ✅ Tests database connection
 
-### Option 2: Full Setup (Recommended for Development)
+### Option 3: Full Setup (Recommended for Development)
 
 Comprehensive setup with guided configuration, testing, and development tools:
 
@@ -119,7 +150,7 @@ chmod +x setup.sh
 - ✅ Provides detailed success/failure reporting
 - ✅ Offers troubleshooting guidance
 
-### Option 3: Manual Setup
+### Option 4: Manual Setup
 
 <details>
 <summary>Click to expand manual setup instructions</summary>
@@ -153,6 +184,234 @@ uvicorn mcp_server.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 </details>
+
+## 🐳 Docker Setup (Detailed)
+
+### Prerequisites for Docker
+
+- **Docker** 20.10+ installed and running
+- **Docker Compose** 2.0+ installed
+- **Git** for cloning the repository
+- **OpenAI API Key** (get one from [OpenAI](https://platform.openai.com/api-keys))
+
+### Docker Quick Start
+
+```bash
+# Clone and enter directory
+git clone https://github.com/Fuadeiza/learning-coach-platform.git
+cd learning-coach-platform
+
+# Copy and configure environment
+cp env.docker.example .env
+nano .env  # Add your OPENAI_API_KEY
+
+# Start all services
+docker-compose up -d
+
+# Check status
+docker-compose ps
+```
+
+### Docker Utility Script
+
+We provide a comprehensive utility script for Docker operations:
+
+```bash
+# Make script executable
+chmod +x docker-scripts.sh
+
+# Development commands
+./docker-scripts.sh dev-up          # Start development environment
+./docker-scripts.sh dev-logs        # View logs
+./docker-scripts.sh dev-shell       # Open shell in web container
+./docker-scripts.sh dev-down        # Stop environment
+
+# Production commands
+./docker-scripts.sh prod-build      # Build production images
+./docker-scripts.sh prod-up         # Start production environment
+./docker-scripts.sh prod-scale 3    # Scale to 3 web replicas
+
+# Database operations
+./docker-scripts.sh db-backup       # Create database backup
+./docker-scripts.sh db-shell        # Open database shell
+./docker-scripts.sh db-reset        # Reset database (careful!)
+
+# Maintenance
+./docker-scripts.sh health-check    # Check system health
+./docker-scripts.sh status          # Show container status
+./docker-scripts.sh cleanup         # Clean up Docker resources
+```
+
+### Docker Services
+
+#### Development Environment (`docker-compose.yml`)
+
+- **Web Application** (Port 8000)
+  - FastAPI application with hot reload
+  - Automatic dependency installation
+  - Volume mounts for development
+
+- **PostgreSQL Database** (Port 5432)
+  - PostgreSQL 15 with automatic schema setup
+  - Persistent data storage
+  - Health checks included
+
+- **Redis Cache** (Port 6379)
+  - Redis 7 with persistence enabled
+  - Optimized for caching workloads
+  - Memory limits configured
+
+- **Adminer** (Port 8080) - *Development Profile*
+  - Web-based database administration
+  - Easy database management and queries
+
+- **Redis Commander** (Port 8081) - *Development Profile*
+  - Web-based Redis management
+  - View cache contents and statistics
+
+#### Production Environment (`docker-compose.prod.yml`)
+
+- **Multi-replica Web Application**
+  - Load balancing across multiple instances
+  - Resource limits and reservations
+  - Rolling updates with zero downtime
+
+- **Nginx Reverse Proxy** (Ports 80/443)
+  - SSL termination
+  - Load balancing
+  - Static file serving
+
+- **Enhanced Security**
+  - Non-root containers
+  - Secrets management
+  - Network isolation
+
+- **Resource Management**
+  - CPU and memory limits
+  - Health checks and auto-restart
+  - Persistent volume configuration
+
+### Docker Environment Configuration
+
+Create `.env` file from template:
+
+```bash
+cp env.docker.example .env
+```
+
+**Required Variables:**
+```bash
+# AI Services (Required)
+OPENAI_API_KEY=sk-your-actual-openai-api-key-here
+
+# Database (Auto-configured for Docker)
+DATABASE_URL=postgresql://postgres:password@db:5432/learning_coach_db
+DB_PASSWORD=password
+
+# Redis (Optional but recommended)
+REDIS_URL=redis://redis:6379/0
+REDIS_PASSWORD=your_redis_password_here
+
+# JWT Security
+JWT_SECRET_KEY=your-super-secure-jwt-secret-key
+```
+
+### Docker Development Workflow
+
+```bash
+# 1. Start development environment
+./docker-scripts.sh dev-up
+
+# 2. View logs in real-time
+./docker-scripts.sh dev-logs
+
+# 3. Make code changes (auto-reload enabled)
+# Edit your Python files...
+
+# 4. Access services
+# API: http://localhost:8000/docs
+# Database: http://localhost:8080 (Adminer)
+# Redis: http://localhost:8081 (Redis Commander)
+
+# 5. Run database operations
+./docker-scripts.sh db-shell      # SQL queries
+./docker-scripts.sh db-backup     # Backup data
+
+# 6. Debug in container
+./docker-scripts.sh dev-shell     # Shell access
+
+# 7. Clean shutdown
+./docker-scripts.sh dev-down
+```
+
+### Production Deployment
+
+```bash
+# 1. Configure production environment
+cp env.docker.example .env.prod
+nano .env.prod  # Set production values
+
+# 2. Build production images
+./docker-scripts.sh prod-build
+
+# 3. Start production environment
+./docker-scripts.sh prod-up
+
+# 4. Scale as needed
+./docker-scripts.sh prod-scale 5  # 5 web replicas
+
+# 5. Monitor
+./docker-scripts.sh prod-logs
+./docker-scripts.sh health-check
+```
+
+### Docker Troubleshooting
+
+**Common Issues:**
+
+**Port Already in Use:**
+```bash
+# Check what's using the port
+lsof -i :8000
+# Stop conflicting services or change ports in docker-compose.yml
+```
+
+**Database Connection Issues:**
+```bash
+# Check database health
+docker-compose exec db pg_isready -U postgres
+# View database logs
+docker-compose logs db
+```
+
+**Out of Disk Space:**
+```bash
+# Clean up Docker resources
+./docker-scripts.sh cleanup
+# Or manually
+docker system prune -a --volumes
+```
+
+**Container Won't Start:**
+```bash
+# Check container logs
+docker-compose logs web
+# Check system resources
+docker stats
+```
+
+### Docker Performance Optimization
+
+**For Development:**
+- Use volume mounts for fast code changes
+- Enable BuildKit for faster builds: `export DOCKER_BUILDKIT=1`
+- Use `.dockerignore` to exclude unnecessary files
+
+**For Production:**
+- Multi-stage builds for smaller images
+- Resource limits to prevent resource exhaustion
+- Health checks for automatic recovery
+- Persistent volumes for data safety
 
 ## ⚙️ Configuration
 
