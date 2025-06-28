@@ -2,6 +2,8 @@
 
 A comprehensive AI-powered learning platform with personalized tutoring, adaptive quizzes, progress tracking, and gamification features.
 
+Live Demo here: https://youtu.be/7iQzjRc635U?feature=shared
+
 ## ✨ Features
 
 ### 🤖 AI-Powered Learning
